@@ -1,0 +1,23 @@
+#header h1, #loading h1, #error h3 {
+	text-align: center;
+}
+
+#closeButton {
+	float: right;
+}
+
+#closeButton:hover {
+	color: blue;
+}
+
+#info-container {
+	padding: 0px 10px 0px 10px;
+}
+
+#inf {
+	padding: 0px;
+}
+
+.col-xs-12#mapCont {
+	padding: 0;
+}
