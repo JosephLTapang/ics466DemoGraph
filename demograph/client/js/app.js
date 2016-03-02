@@ -1,10 +1,33 @@
 var key = "d1dd85496279393bec91d98ae64dca9eae86ba3b";
 var marker, zip, mainMap, info;
+
+ReactiveTabs.createInterface({
+	template: 'dynamicTabs',
+	onChange: function(slug, template) {
+		Session.set('activeTab', slug);
+	}
+});
+
+Template.tabs.helpers({
+	tabs: function() {
+		var retval = [{name: 'Information', slug: 'info', onRender: function(slug, template) {}},
+									{name: 'Search', slug: 'src'}];
+		return retval;
+	},
+	activeTab: function () {
+    return Session.get('activeTab');
+  }
+});
+
 Meteor.startup(function() {
 	GoogleMaps.load();
-	$("#info-container").hide();
+	$("#down").hide();
+	$("#tabs").hide();
+	$("#loading").hide();
 	$("#error").hide();
 	$("#information").hide();
+	$("#map-container").toggleClass("map-tab-closed", true);
+	$("#tabs").toggleClass("tabs-closed", true);
 });
 
 function gc(loc, callback) {
@@ -37,11 +60,11 @@ function er2(fips) {
 }
 
 function er3(r) {
-	$('#appZip').text('Approximate ZIP: ' + zip);
-	$('#popTot').text('Population: ' + JSON.parse(r.content)[1][0]);
-	$('#popM').text('Male: ' + JSON.parse(r.content)[1][1]);
-	$('#popF').text('Female: ' + JSON.parse(r.content)[1][2]);
 	$("#loading").hide(300, function() {
+			$('#appZip').text('Approximate ZIP: ' + zip);
+			$('#popTot').text('Population: ' + JSON.parse(r.content)[1][0]);
+			$('#popM').text('Male: ' + JSON.parse(r.content)[1][1]);
+			$('#popF').text('Female: ' + JSON.parse(r.content)[1][2]);
 		$("#information").show(300);
 	});
 }
@@ -66,14 +89,19 @@ function parse(results, loc) {
 }
 
 function mapClick(e) {
-	$("#map-container").animate({height: "70vh"}, 300);
-	$("#info-container").show(300, function() {
+		if ($("#map-container").hasClass("map-tab-closed")) {
+			$("#up").toggle();
+			$("#down").toggle();
+			$("#tabs").toggle(300);
+			$("#map-container").toggleClass("map-tab-open");
+			$("#map-container").toggleClass("map-tab-closed");
+		}
+		Session.set('activeTab','info');
+		$("#information").hide();
+		$("#error").hide();
 		$("#loading").show(300);
-		$("#error").hide(300);
-		$("#information").hide(300);
-	});
-	marker.setPosition(e.latLng);
-  gc({'location': e.latLng}, parse);
+		marker.setPosition(e.latLng);
+  	gc({'location': e.latLng}, parse);
 }
 
 function mapReady(map) {
@@ -101,9 +129,14 @@ Template.map.helpers({
 	}
 });
 
-Template.infoDiv.events({
-	"click #close": function(e) {
-		$("#info-container").hide(300);
-		$("#map-container").animate({height: "100vh"}, 300);
+Template.tabs.events({
+	"click #upDown": function(e) {
+		$("#tabs").toggle(300);
+		$("#up").toggle();
+		$("#down").toggle();
+		$("#map-container").toggleClass("map-tab-open");
+		$("#map-container").toggleClass("map-tab-closed");
+		$("#tabs").toggleClass("map-tab-open");
+		$("#tabs").toggleClass("map-tab-closed");
 	}
 });
