@@ -12,6 +12,7 @@ caching-compiler@1.0.0
 caching-html-compiler@1.0.2
 callback-hook@1.0.4
 check@1.1.0
+coffeescript@1.0.11
 dburles:google-maps@1.1.5
 ddp@1.2.2
 ddp-client@1.2.1
@@ -36,8 +37,11 @@ id-map@1.0.4
 insecure@1.0.4
 jquery@1.11.4
 launch-screen@1.0.4
+less@2.5.1
 livedata@1.0.15
 logging@1.0.8
+matb33:bootstrap-base@10.0.0
+matb33:bootstrap-glyphicons@10.0.0
 meteor@1.1.10
 meteor-base@1.0.1
 minifiers@1.1.7
@@ -60,6 +64,7 @@ session@1.1.1
 spacebars@1.0.7
 spacebars-compiler@1.0.7
 standard-minifiers@1.0.2
+templates:tabs@2.2.1
 templating@1.1.5
 templating-tools@1.0.0
 tracker@1.0.9

@@ -21,3 +21,5 @@ insecure                # Allow all DB writes from clients (for prototyping)
 dburles:google-maps
 http
 gwendall:template-animations
+matb33:bootstrap-glyphicons
+templates:tabs
