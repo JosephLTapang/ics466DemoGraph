@@ -53,20 +53,42 @@
 	padding: 0;
 }
 
-@media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+@media screen and (orientation: portrait) {
 	.map-tab-open {
-		height: 60vh;
+		height: 400px;
 	}
 
 	.map-tab-closed {
-		height: 90vh;
+		height: 500px;
 	}
 
 	.tabs-open {
-		height: 40vh;
+		height: 100px;
 	}
 
 	.tabs-closed {
-		height: 10vh;
+		height: 10px;
 	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 960px) {
+	.map-tab-open {
+		height: 270px;
+	}
+
+	.map-tab-closed {
+		height: 540px;
+	}
+
+	.tabs-open {
+		height: 270px;
+	}
+
+	.tabs-closed {
+		height: 270px;
+	}
+}
+
+#chart, #information {
+	margin: 0
 }

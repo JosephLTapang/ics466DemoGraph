@@ -1,24 +1,29 @@
 <template name="infoDiv">
-	<div id="info-container" style="width: 100%">
-		<div id="drop">
-			<select id="choices">
-				{{#each param in params}}
-					<option value="total">{{param}}</option>
-				{{/each}}
-			</select>
-		</div>
-		<div id="loading">
+	<div class="row" id="info-container" style="width: 100%">
+			<div class="col-sm-12" id="drop">
+				<select id="choices">
+					{{#each param in params}}
+						<option value="total">{{param}}</option>
+					{{/each}}
+				</select>
+			</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12" id="loading">
 			<h1>LOADING...</h1>
 		</div>
-		<div id="error">
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12" id="error">
 			<h3>There was an error processing your request.</h3>
 		</div>
-		<div id="dataWrapper">
-			<div id="information">
+	</div>
 
-			</div>
-			<div id="chart">
-			</div>
+	<div class="row" id="dataWrapper">
+		<div class="col-sm-4" id="information">
+		</div>
+		<div class="col-sm-8" id="chart">
 		</div>
 	</div>
 </template>
