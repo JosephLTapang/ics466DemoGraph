@@ -40,6 +40,7 @@ launch-screen@1.0.4
 less@2.5.1
 livedata@1.0.15
 logging@1.0.8
+maazalik:highcharts@0.4.0
 matb33:bootstrap-base@10.0.0
 matb33:bootstrap-glyphicons@10.0.0
 meteor@1.1.10
