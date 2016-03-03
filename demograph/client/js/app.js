@@ -8,6 +8,21 @@ ReactiveTabs.createInterface({
 	}
 });
 
+Template.infoDiv.helpers({
+	query: function(){
+		return $("#information").children().length > 0;
+	}
+});
+
+Template.infoDiv.events({
+	'change #choices': function() {
+		$("#dataWrapper").hide();
+		$("#error").hide();
+		$("#loading").show(300);
+		gc({'location': marker.position}, parse);
+	}
+});
+
 Template.tabs.helpers({
 	tabs: function() {
 		var retval = [{name: 'Information', slug: 'info', onRender: function(slug, template) {}},
@@ -19,13 +34,66 @@ Template.tabs.helpers({
   }
 });
 
+function chartBuild() {
+	var data = [];
+	var c = [];
+	$("#information p").each(function() {
+		var t = $(this);
+		c.push([t.text().split(": ")[0], Number.parseInt(t.text().split(": ")[1])]);
+	});
+
+	var total = c[1][1];
+	console.log(total);
+	for (var l = 2; l < c.length; l++) {
+		data[data.length] = [c[l][0], c[l][1]/ total * 100];
+	}
+
+	return {
+		chart: {
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false
+		},
+		tooltip: {
+			pointFormat: '<b>{point.percentage:.1f}%<b>'
+		},
+		plotOptions: {
+			pie: {
+				allowPointSelect: true,
+				dataLabels: {
+					enabled: true,
+					format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+					style: {
+						color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+					},
+					connectorColor: 'silver'
+				}
+			}
+		},
+		series: [{
+			type: 'pie',
+			name: 'stats',
+			data: data
+		}]
+	};
+}
+
+Template.infoDiv.helpers({
+	params: function(){
+		return params();
+	},
+	chart: function() {
+		return chartBuild();
+	}
+});
+
 Meteor.startup(function() {
 	GoogleMaps.load();
 	$("#down").hide();
 	$("#tabs").hide();
 	$("#loading").hide();
 	$("#error").hide();
-	$("#information").hide();
+	$("#dataWrapper").hide();
 	$("#map-container").toggleClass("map-tab-closed", true);
 	$("#tabs").toggleClass("tabs-closed", true);
 });
@@ -47,13 +115,25 @@ function er1(loc, callback) {
 	});
 }
 
+function codes() {
+	return [["B01003_001E","B01001_002E","B01001_026E"], ["B01003_001E", "B02001_002E", "B02001_003E", "B02001_004E", "B02001_005E", "B02001_006E", "B02001_007E", "B02001_008E"]];
+}
+
+function params() {
+	return ["Total Population by Gender", "Total Population by Race"];
+}
+
+function labels() {
+	return [["Total Population", "Male", "Female"], ["Total Population", "White", "Black", "American Indian or Alaska Native", "Asian", "Native Hawaiian or Other Pacific Islander", "Other", "Two or More"]]
+}
+
 function er2(fips) {
 	if (fips !== null) {
 		state = fips.substring(0, 2);
 		county = fips.substring(2, 5);
 		tract = fips.substring(5, 11);
 		block = fips.substring(11);
-		Meteor.call("cenCall", key,tract,state,county, function(error, r) {
+		Meteor.call("cenCall", key, codes()[params().indexOf($("#choices option:selected").text())], tract,state,county, function(error, r) {
 			er3(r);
 		});
 	}
@@ -61,11 +141,14 @@ function er2(fips) {
 
 function er3(r) {
 	$("#loading").hide(300, function() {
-			$('#appZip').text('Approximate ZIP: ' + zip);
-			$('#popTot').text('Population: ' + JSON.parse(r.content)[1][0]);
-			$('#popM').text('Male: ' + JSON.parse(r.content)[1][1]);
-			$('#popF').text('Female: ' + JSON.parse(r.content)[1][2]);
-		$("#information").show(300);
+		var con = JSON.parse(r.content)[1];
+		$("#information").empty();
+		$("#information").html("<p>Approximate ZIP: " + zip + "</p>");
+		for (var p = 0; p < labels()[params().indexOf($("#choices option:selected").text())].length; p++) {
+			$("#information").html($("#information").html() + "\n<p>" + labels()[params().indexOf($("#choices option:selected").text())][p] + ": " + con[p] + "</p>");
+		}
+		$("#chart").highcharts(chartBuild());
+		$("#dataWrapper").show(300);
 	});
 }
 
@@ -97,7 +180,7 @@ function mapClick(e) {
 			$("#map-container").toggleClass("map-tab-closed");
 		}
 		Session.set('activeTab','info');
-		$("#information").hide();
+		$("#dataWrapper").hide();
 		$("#error").hide();
 		$("#loading").show(300);
 		marker.setPosition(e.latLng);

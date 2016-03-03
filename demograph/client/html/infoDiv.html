@@ -1,16 +1,24 @@
 <template name="infoDiv">
 	<div id="info-container" style="width: 100%">
+		<div id="drop">
+			<select id="choices">
+				{{#each param in params}}
+					<option value="total">{{param}}</option>
+				{{/each}}
+			</select>
+		</div>
 		<div id="loading">
 			<h1>LOADING...</h1>
 		</div>
 		<div id="error">
 			<h3>There was an error processing your request.</h3>
 		</div>
-		<div id="information">
-				<p id="appZip">Approximate ZIP: </p>
-				<p id="popTot">Total Population: </p>
-				<p id="popM">Male: </p>
-				<p id="popF">Female: </p>
+		<div id="dataWrapper">
+			<div id="information">
+
+			</div>
+			<div id="chart">
+			</div>
 		</div>
 	</div>
 </template>
