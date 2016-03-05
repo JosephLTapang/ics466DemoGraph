@@ -1,11 +1,39 @@
 <template name="search">
 	<div id="searchForm" class="row">
-		<form>
+		<form onsubmit="return false;">
 		<p>Search Parameters: </p>
-		<div class="btn-group" data-toggle="buttons">
-			<label class="btn btn-default active"><input class="form-control" type="radio" name="gender" value="gender" checked>Gender</label>
-			<label class="btn btn-default"><input class="form-control" type="radio" name="race" value="race">Race</label>
+		<div id="location">
+			<select class="form-control" id="selectL">
+				{{#each state in states}}
+					<option value="state-{{state.[1]}}">{{state.[0]}}</option>
+				{{/each}}
+			</select>
 		</div>
+		<div id="Gender">
+			<p>Gender</p>
+			<select class="form-control" id="selectG">
+				{{#each gender in genders}}
+					<option value="gender-{{gender.[1]}}">{{gender.[0]}}</option>
+				{{/each}}
+			</select>
+		</div>
+		<div id="race">
+			<p>Race</p>
+			<select class="form-control" id="selectR">
+				{{#each race in races}}
+					<option value="race-{{race.[1]}}">{{race.[0]}}</option>
+				{{/each}}
+			</select>
+		</div>
+		<div id="age">
+			<p>Age</p>
+			<select class="form-control" id="selectA">
+				{{#each age in ages}}
+					<option value="age-{{age.[1]}}">{{age.[0]}}</option>
+				{{/each}}
+			</select>
+		</div>
+		<input type="submit" class="form-control">
 		</form>
 	</div>
 </template>
