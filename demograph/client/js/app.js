@@ -1,16 +1,12 @@
-var key = "d1dd85496279393bec91d98ae64dca9eae86ba3b";
-var marker, zip, mainMap, info;
+var key = "d1dd85496279393bec91d98ae64dca9eae86ba3b", marker, zip, mainMap, info;
+var codes = [["B01003_001E","B01001_002E","B01001_026E"], ["B01003_001E", "B02001_002E", "B02001_003E", "B02001_004E", "B02001_005E", "B02001_006E", "B02001_007E", "B02001_008E"]];
+var params = ["Total Population by Gender", "Total Population by Race"];
+var labels = [["Total Population", "Male", "Female"], ["Total Population", "White", "Black", "American Indian or Alaska Native", "Asian", "Native Hawaiian or Other Pacific Islander", "Other", "Two or More"]];
 
 ReactiveTabs.createInterface({
 	template: 'dynamicTabs',
 	onChange: function(slug, template) {
 		Session.set('activeTab', slug);
-	}
-});
-
-Template.infoDiv.helpers({
-	query: function(){
-		return $("#information").children().length > 0;
 	}
 });
 
@@ -43,7 +39,6 @@ function chartBuild() {
 	});
 
 	var total = c[1][1];
-	console.log(total);
 	for (var l = 2; l < c.length; l++) {
 		data[data.length] = [c[l][0], c[l][1]/ total * 100];
 	}
@@ -53,6 +48,9 @@ function chartBuild() {
 			plotBackgroundColor: null,
 			plotBorderWidth: null,
 			plotShadow: false
+		},
+		title: {
+			text: $("#choices option:selected").text()
 		},
 		tooltip: {
 			pointFormat: '<b>{point.percentage:.1f}%<b>'
@@ -80,7 +78,7 @@ function chartBuild() {
 
 Template.infoDiv.helpers({
 	params: function(){
-		return params();
+		return params;
 	},
 	chart: function() {
 		return chartBuild();
@@ -115,25 +113,13 @@ function er1(loc, callback) {
 	});
 }
 
-function codes() {
-	return [["B01003_001E","B01001_002E","B01001_026E"], ["B01003_001E", "B02001_002E", "B02001_003E", "B02001_004E", "B02001_005E", "B02001_006E", "B02001_007E", "B02001_008E"]];
-}
-
-function params() {
-	return ["Total Population by Gender", "Total Population by Race"];
-}
-
-function labels() {
-	return [["Total Population", "Male", "Female"], ["Total Population", "White", "Black", "American Indian or Alaska Native", "Asian", "Native Hawaiian or Other Pacific Islander", "Other", "Two or More"]]
-}
-
 function er2(fips) {
 	if (fips !== null) {
 		state = fips.substring(0, 2);
 		county = fips.substring(2, 5);
 		tract = fips.substring(5, 11);
 		block = fips.substring(11);
-		Meteor.call("cenCall", key, codes()[params().indexOf($("#choices option:selected").text())], tract,state,county, function(error, r) {
+		Meteor.call("cenCall", key, codes[params.indexOf($("#choices option:selected").text())], tract,state,county, function(error, r) {
 			er3(r);
 		});
 	}
@@ -144,8 +130,8 @@ function er3(r) {
 		var con = JSON.parse(r.content)[1];
 		$("#information").empty();
 		$("#information").html("<p>Approximate ZIP: " + zip + "</p>");
-		for (var p = 0; p < labels()[params().indexOf($("#choices option:selected").text())].length; p++) {
-			$("#information").html($("#information").html() + "\n<p>" + labels()[params().indexOf($("#choices option:selected").text())][p] + ": " + con[p] + "</p>");
+		for (var p = 0; p < labels[params.indexOf($("#choices option:selected").text())].length; p++) {
+			$("#information").html($("#information").html() + "\n<p>" + labels[params.indexOf($("#choices option:selected").text())][p] + ": " + con[p] + "</p>");
 		}
 		$("#chart").highcharts(chartBuild());
 		$("#dataWrapper").show(300);
@@ -219,7 +205,7 @@ Template.tabs.events({
 		$("#down").toggle();
 		$("#map-container").toggleClass("map-tab-open");
 		$("#map-container").toggleClass("map-tab-closed");
-		$("#tabs").toggleClass("map-tab-open");
-		$("#tabs").toggleClass("map-tab-closed");
+		$("#tabs").toggleClass("tabs-open");
+		$("#tabs").toggleClass("tabs-closed");
 	}
 });
