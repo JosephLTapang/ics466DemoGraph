@@ -1,0 +1,19 @@
+<template name="tabs">
+	<div id="upDown">
+			<span id="up" class="glyphicon glyphicon-chevron-up"></span>
+			<span id="down" class="glyphicon glyphicon-chevron-down"></span>
+	</div>
+	<div id="tabs">
+		{{#dynamicTabs name="" tabs=tabs activeTab=activeTab}}
+
+			{{#tabContent slug="info"}}
+       {{> infoDiv}}
+			{{/tabContent}}
+
+			{{#tabContent slug="src"}}
+				<p>magic</p>
+			{{/tabContent}}
+
+		{{/dynamicTabs}}
+	</div>
+</template>
