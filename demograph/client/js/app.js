@@ -48,7 +48,7 @@ function pad(num, size) {
 function createCodes() {
 	var retval = [];
 	var aRace = ["A", "B", "C", "D", "E", "F", "G"];
-	for (var p = 2; p <= 31; p++) {
+	for (var p = 1; p <= 31; p++) {
 		for (var k = 0; k < aRace.length; k++) {
 			retval[retval.length] = "B01001" + aRace[k] + "_" + pad(p, 3) + "E";
 		}
@@ -76,7 +76,8 @@ Template.infoDiv.events({
 
 function constructQuery() {
 	var state = states[$("#selectL option:selected").index()][1];
-	var code = codes2[$("#selectG option:selected").index() * 2 + $("#selectR option:selected").index() * 7 + $("#selectA option:selected").index()];
+	var ageInc = ages.length * $("#selectG option:selected").index();
+	var code = codes2[races.length * ($("#selectA option:selected").index() + ageInc) + $("#selectR option:selected").index()];
 	return {
 		state: state,
 		code: code
