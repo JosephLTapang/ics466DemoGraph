@@ -14,7 +14,7 @@ Meteor.call("states", key, function(error, r) {
 	}
 });
 
-var genders = [['Male', 'male'], ['Female', 'female']]
+var genders = [['Male', 'male'], ['Female', 'female']];
 
 var races = [ ['White', 'white'], ['Black', 'black'], ['American Indian or Alaska Native', 'native'], ['Asian', 'asian'], ['Native Hawaiian or Other Pacific Islander', 'hwn'], ['Other', 'other'], ['Two or More Races', 'ge2'] ];
 
@@ -56,7 +56,7 @@ function createCodes() {
 	return retval;
 }
 
-var codes = createCodes();
+var codes2 = createCodes();
 
 ReactiveTabs.createInterface({
 	template: 'dynamicTabs',
@@ -76,11 +76,11 @@ Template.infoDiv.events({
 
 function constructQuery() {
 	var state = states[$("#selectL option:selected").index()][1];
-	var code = codes[$("#selectG option:selected").index() * 2 + $("#selectR option:selected").index() * 7 + $("#selectA option:selected").index()];
+	var code = codes2[$("#selectG option:selected").index() * 2 + $("#selectR option:selected").index() * 7 + $("#selectA option:selected").index()];
 	return {
 		state: state,
 		code: code
-	}
+	};
 }
 
 Template.search.events({
