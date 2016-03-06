@@ -28,13 +28,12 @@ var ages = [
 	['20 to 24 years', 'ge20le24'],
 	['25 to 29 years', 'ge25le29'],
 	['30 to 34 years', 'ge30le34'],
-	['35 to 39 years', 'ge35le39'],
-	['40 to 44 years', 'ge40le44'],
+	['35 to 44 years', 'ge40le44'],
 	['45 to 54 years', 'ge45le54'],
 	['55 to 64 years', 'ge55le64'],
 	['65 to 74 years', 'ge65le74'],
 	['75 to 84 years', 'ge75le84'],
-	['Over 85 years', 'ge85']
+	['85 years and over', 'ge85']
 ];
 
 /*
@@ -48,7 +47,7 @@ function pad(num, size) {
 function createCodes() {
 	var retval = [];
 	var aRace = ["A", "B", "C", "D", "E", "F", "G"];
-	for (var p = 1; p <= 31; p++) {
+	for (var p = 2; p <= 31; p++) {
 		for (var k = 0; k < aRace.length; k++) {
 			retval[retval.length] = "B01001" + aRace[k] + "_" + pad(p, 3) + "E";
 		}
@@ -275,9 +274,26 @@ function search() {
 	console.log(q);
 	Meteor.call("cenCall2", key, q.code, q.state, function(error, r) {
 		if (error) console.log(error); else if (r) {
-			console.log(r.data);
+			var d = sortData(r.data);
+			$("#resultsStr").text("");
+			for (var p = 0; p < d.length; p++) {
+				$("#resultsStr").text($("#resultsStr").text() + d[p][1] + ": " + d[p][0] + "\n");
+			}
 		}
 	});
+}
+
+function sortData(data) {
+	data.shift();
+	data.sort(function(a,b) {
+		return b[0] - a[0];
+	});
+	var p = 0, retval = [];
+	while (p < 3 && data.length > 0) {
+		retval[retval.length] = data.shift();
+		p++;
+	}
+	return retval;
 }
 
 Template.map.onCreated(function () {
