@@ -305,7 +305,9 @@ Template.map.helpers({
 		if (GoogleMaps.loaded()) {
 			return {
 				center: {lat: 21.3, lng: -157.818968},
-				zoom: 10
+				zoom: 10,
+				streetViewControl: false,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 		}
 	}
