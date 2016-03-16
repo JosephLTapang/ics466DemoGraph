@@ -1,17 +1,30 @@
+/*
+ *  File: app.js
+ *  Author: Derek Chan
+ */
+
+Session.set("results", "");
+Session.set("renderedStates", false);
+
 var key = "d1dd85496279393bec91d98ae64dca9eae86ba3b", marker, zip, mainMap, info;
 var codes = [["B01003_001E","B01001_002E","B01001_026E"], ["B01003_001E", "B02001_002E", "B02001_003E", "B02001_004E", "B02001_005E", "B02001_006E", "B02001_007E", "B02001_008E"]];
 var params = ["Total Population by Gender", "Total Population by Race"];
 var labels = [["Total Population", "Male", "Female"], ["Total Population", "White", "Black", "American Indian or Alaska Native", "Asian", "Native Hawaiian or Other Pacific Islander", "Other", "Two or More"]];
 
 var states = [];
+
 Meteor.call("states", key, function(error, r) {
 	if (error) {
 		console.log(error);
-  } else if (r) {
+		$("#searchError").show();
+	} else if (r) {
 		var eh = r.data;
 		eh.shift();
 		states = eh;
+		Session.set("renderedStates", true);
+		$("#searchForm").show();
 	}
+	$("#searchLoading").hide();
 });
 
 var genders = [['Male', 'male'], ['Female', 'female']];
@@ -36,14 +49,60 @@ var ages = [
 	['85 years and over', 'ge85']
 ];
 
+Template.search.helpers({
+	states: function() {
+		return states;
+	},
+	genders: function() {
+		return genders;
+	},
+	races: function() {
+		return races;
+	},
+	ages: function() {
+		return ages;
+	},
+	rendered: function() {
+		return Session.get("renderedStates");
+	}
+});
+
+Meteor.startup(function() {
+	GoogleMaps.load();
+	$("#down").hide();
+	$("#tabs").hide();
+	$("#loading").hide();
+	$("#error").hide();
+	$("#dataWrapper").hide();
+	$("#map-container").toggleClass("map-tab-closed", true);
+	$("#tabs").toggleClass("tabs-closed", true);
+	$("#ressLoading").hide();
+	$("#ressError").hide();
+	$("#ress").hide();
+	$("#searchBar").hide();
+	$("#searchError").hide();
+	$("#searchForm").hide();
+	$("#searchBar").toggleClass("col-sm-10", false);
+	$("#searchBar").toggleClass("search-closed", true);
+	$("#mapCont").toggleClass("col-sm-9", false);
+	$("#mapCont").toggleClass("col-sm-11", true);
+	$("#searchCol").toggleClass("col-sm-3", false);
+	$("#searchCol").toggleClass("col-sm-1", true);
+	$("#searchLoading").show();
+});
+
 /*
- * http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript
+ * Source: http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript
  */
 function pad(num, size) {
     var s = "000000000" + num;
     return s.substr(s.length-size);
 }
 
+/*
+ * Generation of table codes
+ *
+ */
 function createCodes() {
 	var retval = [];
 	var aRace = ["A", "B", "C", "D", "E", "F", "G"];
@@ -61,6 +120,19 @@ ReactiveTabs.createInterface({
 	template: 'dynamicTabs',
 	onChange: function(slug, template) {
 		Session.set('activeTab', slug);
+	}
+});
+
+Template.searchWrapper.events({
+	'click #burger': function() {
+		$("#searchBar").toggle();
+		$("#searchBar").toggleClass("search-open");
+		$("#searchBar").toggleClass("search-closed");
+		$("#searchBar").toggleClass("col-sm-10");
+		$("#searchCol").toggleClass("col-sm-3");
+		$("#searchCol").toggleClass("col-sm-1");
+		$("#mapCont").toggleClass("col-sm-11");
+		$("#mapCont").toggleClass("col-sm-9");
 	}
 });
 
@@ -86,33 +158,29 @@ function constructQuery() {
 Template.search.events({
 	'click input[type=submit]': function() {
 		search();
-	}
-});
-
-Template.search.helpers({
-	states: function() {
-		return states;
-	},
-	genders: function() {
-		return genders;
-	},
-	races: function() {
-		return races;
-	},
-	ages: function() {
-		return ages;
+		Session.set("activeTab", "results");
+		if ($("#map-container").hasClass("map-tab-closed")) {
+			$("#up").toggle();
+			$("#down").toggle();
+			$("#tabs").toggle(300);
+			$("#map-container").toggleClass("map-tab-open");
+			$("#map-container").toggleClass("map-tab-closed");
+		}
 	}
 });
 
 Template.tabs.helpers({
 	tabs: function() {
 		var retval = [{name: 'Information', slug: 'info', onRender: function(slug, template) {}},
-									{name: 'Search', slug: 'src'}];
+									{name: 'Results', slug: 'results'}];
 		return retval;
 	},
 	activeTab: function () {
     return Session.get('activeTab');
-  }
+  },
+	reses: function() {
+		return Session.get("results");
+	}
 });
 
 function chartBuild() {
@@ -169,17 +237,6 @@ Template.infoDiv.helpers({
 	chart: function() {
 		return chartBuild();
 	}
-});
-
-Meteor.startup(function() {
-	GoogleMaps.load();
-	$("#down").hide();
-	$("#tabs").hide();
-	$("#loading").hide();
-	$("#error").hide();
-	$("#dataWrapper").hide();
-	$("#map-container").toggleClass("map-tab-closed", true);
-	$("#tabs").toggleClass("tabs-closed", true);
 });
 
 function gc(loc, callback) {
@@ -271,15 +328,17 @@ function mapReady(map) {
 
 function search() {
 	var q = constructQuery();
-	console.log(q);
+	$("#ressLoading").show();
 	Meteor.call("cenCall2", key, q.code, q.state, function(error, r) {
-		if (error) console.log(error); else if (r) {
+		if (error) $("#ressError").show(); else if (r) {
 			var d = sortData(r.data);
-			$("#resultsStr").text("");
+			Session.set("results", "");
 			for (var p = 0; p < d.length; p++) {
-				$("#resultsStr").text($("#resultsStr").text() + d[p][1] + ": " + d[p][0] + "\n");
+				Session.set("results", Session.get("results") + d[p][1] + ": " + d[p][0] + "\n");
 			}
+			$("#ress").show();
 		}
+		$("#ressLoading").hide();
 	});
 }
 
