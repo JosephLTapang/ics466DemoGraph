@@ -1,12 +1,20 @@
 <template name="search">
+	<div id="searchLoading" class="row">
+		<h1>LOADING...</h1>
+	</div>
+	<div id="searchError" class="row">
+		<h2>There was an error.</h2>
+	</div>
 	<div id="searchForm" class="row">
 		<form onsubmit="return false;">
 		<p>Search Parameters: </p>
 		<div id="location">
 			<select class="form-control" id="selectL">
-				{{#each state in states}}
-					<option value="state-{{state.[1]}}">{{state.[0]}}</option>
-				{{/each}}
+				{{#if rendered}}
+					{{#each state in states}}
+						<option value="state-{{state.[1]}}">{{state.[0]}}</option>
+					{{/each}}
+				{{/if}}
 			</select>
 		</div>
 		<div id="Gender">

@@ -10,8 +10,16 @@
        {{> infoDiv}}
 			{{/tabContent}}
 
-			{{#tabContent slug="src"}}
-				{{> search}}
+			{{#tabContent slug="results"}}
+				<div id="ressLoading">
+					<h1>LOADING...</h1>
+				</div>
+				<div id="ressError">
+					<h2>There was an error processing your request.</h2>
+				</div>
+				<div id="ress">
+					{{reses}}
+				</div>
 			{{/tabContent}}
 
 		{{/dynamicTabs}}
