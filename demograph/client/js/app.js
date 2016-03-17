@@ -324,7 +324,12 @@ function mapReady(map) {
 		position: map.options.center,
 		map: map.instance
 	});
-	map.instance.addListener('click', mapClick);
+
+	kmlLayer =	new google.maps.KmlLayer({
+		 url: 'https://github.com/ElliotIto/ics466DemoGraph/blob/elliotTesting/resources/cb_2014_us_state_20m.kml',
+		 map: map.instance
+	 });
+	 map.instance.addListener('click', mapClick);
 }
 
 function search() {
@@ -357,6 +362,7 @@ function sortData(data) {
 	}
 	return retval;
 }
+
 
 Template.map.onCreated(function () {
 	GoogleMaps.ready('myMap', mapReady);
