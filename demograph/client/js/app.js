@@ -6,6 +6,7 @@
 Session.set("results", "");
 Session.set("renderedStates", false);
 
+// Necessary data
 var key = "d1dd85496279393bec91d98ae64dca9eae86ba3b", marker, zip, mainMap, info;
 var codes = [["B01003_001E","B01001_002E","B01001_026E"], ["B01003_001E", "B02001_002E", "B02001_003E", "B02001_004E", "B02001_005E", "B02001_006E", "B02001_007E", "B02001_008E"]];
 var params = ["Total Population by Gender", "Total Population by Race"];
@@ -13,6 +14,7 @@ var labels = [["Total Population", "Male", "Female"], ["Total Population", "Whit
 
 var states = [];
 
+// Initializing states array
 Meteor.call("states", key, function(error, r) {
 	if (error) {
 		console.log(error);
@@ -49,6 +51,7 @@ var ages = [
 	['85 years and over', 'ge85']
 ];
 
+// Helper functions for the search template
 Template.search.helpers({
 	states: function() {
 		return states;
@@ -91,18 +94,13 @@ Meteor.startup(function() {
 	$("#searchLoading").show();
 });
 
-/*
- * Source: http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript
- */
+// Source: http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript
 function pad(num, size) {
     var s = "000000000" + num;
     return s.substr(s.length-size);
 }
 
-/*
- * Generation of table codes
- *
- */
+// Generation of table codes
 function createCodes() {
 	var retval = [];
 	var aRace = ["A", "B", "C", "D", "E", "F", "G"];
@@ -114,6 +112,7 @@ function createCodes() {
 	return retval;
 }
 
+// Creation of table codes for lookup
 var codes2 = createCodes();
 
 ReactiveTabs.createInterface({
@@ -145,6 +144,7 @@ Template.infoDiv.events({
 	}
 });
 
+// Construction of API query
 function constructQuery() {
 	var state = states[$("#selectL option:selected").index()][1];
 	var ageInc = ages.length * $("#selectG option:selected").index();
@@ -183,6 +183,7 @@ Template.tabs.helpers({
 	}
 });
 
+// Chart construction
 function chartBuild() {
 	var data = [];
 	var c = [];
@@ -329,6 +330,8 @@ function mapReady(map) {
 function search() {
 	var q = constructQuery();
 	$("#ressLoading").show();
+	$("#ressError").hide();
+	$("#ress").hide();
 	Meteor.call("cenCall2", key, q.code, q.state, function(error, r) {
 		if (error) $("#ressError").show(); else if (r) {
 			var d = sortData(r.data);
