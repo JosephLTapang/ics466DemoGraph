@@ -326,7 +326,7 @@ function mapReady(map) {
 	});
 
 	kmlLayer =	new google.maps.KmlLayer({
-		 url: 'https://raw.githubusercontent.com/ElliotIto/ics466DemoGraph/elliotTesting/resources/cb_2014_us_state_20m.kml',
+		 url: 'https://raw.githubusercontent.com/ElliotIto/ics466DemoGraph/elliotTesting/resources/cb_2014_15_tract_500k.kml',
 		 map: map.instance
 	 });
 	 map.instance.addListener('click', mapClick);
