@@ -324,12 +324,13 @@ function mapReady(map) {
 		position: map.options.center,
 		map: map.instance
 	});
-
+	map.instance.addListener('click', mapClick);
 	kmlLayer =	new google.maps.KmlLayer({
 		 url: 'https://raw.githubusercontent.com/ElliotIto/ics466DemoGraph/elliotTesting/resources/cb_2014_15_tract_500k.kml',
+		 posistion: map.options.center,
 		 map: map.instance
 	 });
-	 map.instance.addListener('click', mapClick);
+
 }
 
 function search() {
