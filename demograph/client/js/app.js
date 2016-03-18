@@ -317,6 +317,7 @@ function mapClick(e) {
   	gc({'location': e.latLng}, parse);
 }
 
+
 function mapReady(map) {
 	info = new google.maps.InfoWindow();
 	mainMap = map.instance;
@@ -330,8 +331,8 @@ function mapReady(map) {
 		 posistion: map.options.center,
 		 map: map.instance
 	 });
-
 }
+
 
 function search() {
 	var q = constructQuery();
