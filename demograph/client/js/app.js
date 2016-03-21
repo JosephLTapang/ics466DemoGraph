@@ -364,24 +364,9 @@ Template.map.onCreated(function () {
 	GoogleMaps.ready('myMap', mapReady);
 });
 
-/*
-Template.map.helpers({
-	options: function() {
-		if (GoogleMaps.loaded()) {
-			return {
-				center: {lat: 21.3, lng: -157.818968},
-				zoom: 10,
-				streetViewControl: false,
-				mapTypeControl:false,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			};
-		}
-	}
-});
-*/
-
+/////////////////////////////////////////////////////////////////////////
 //Source: http://meteorcapture.com/reactive-geolocation-with-google-maps/
-
+/////////////////////////////////////////////////////////////////////////
 Template.map.helpers({  
   geolocationError: function() {
     var error = Geolocation.error();
@@ -414,9 +399,3 @@ Template.tabs.events({
 		$("#tabs").toggleClass("tabs-closed");
 	}
 });
-
-
-
-
-
-
