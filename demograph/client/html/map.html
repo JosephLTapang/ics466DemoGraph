@@ -1,5 +1,11 @@
-<template name="map">
-	<div id="map-container">
-		{{> googleMap name="myMap" options=options}}
-	</div>
-</template>
+<!-- Source: http://meteorcapture.com/reactive-geolocation-with-google-maps/ -->
+
+<template name="map">  
+  <div id="map-container">
+    {{#unless geolocationError}}
+      {{> googleMap name="myMap" options=options}}
+    {{else}}
+      Geolocation failed: {{geolocationError}}
+    {{/unless}}
+  </div>
+</template> 
